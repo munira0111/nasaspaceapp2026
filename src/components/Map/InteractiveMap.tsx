@@ -28,13 +28,13 @@ export const InteractiveMap: React.FC<Props> = ({ event, observationMode, layers
 
   // Basemap URLs
   const BASEMAPS = {
-    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    dark: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
   };
 
   const ATTRIBUTIONS = {
-    dark: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    dark: 'Tiles &copy; Esri &mdash; Sources: HERE, Garmin, &copy; OpenStreetMap contributors, and the GIS user community',
     satellite: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP',
     street: '&copy; OpenStreetMap contributors'
   };
@@ -200,7 +200,7 @@ export const InteractiveMap: React.FC<Props> = ({ event, observationMode, layers
               basemap === 'dark' ? 'bg-cyan-500 text-slate-950 font-bold' : 'text-slate-300 hover:bg-slate-800'
             }`}
           >
-            NASA Dark
+            Dark Map
           </button>
           <button
             onClick={() => setBasemap('satellite')}

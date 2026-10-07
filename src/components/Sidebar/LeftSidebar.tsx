@@ -54,7 +54,17 @@ export const LeftSidebar: React.FC<Props> = ({
 
   const countries = Array.from(new Set(regions.map(r => r.country)));
   const filteredRegions = countryFilter === 'ALL' ? regions : regions.filter(r => r.country === countryFilter);
-  const filteredEvents = events.filter(e => e.regionId === selectedRegionId);
+
+  const handleCountryChange = (country: string) => {
+    setCountryFilter(country);
+    const availableRegions = country === 'ALL' ? regions : regions.filter(region => region.country === country);
+    const nextRegion = availableRegions.find(region => region.id === selectedRegionId) ?? availableRegions[0];
+    if (!nextRegion) return;
+
+    if (nextRegion.id !== selectedRegionId) onSelectRegion(nextRegion.id);
+    const nextEvent = events.find(event => event.regionId === nextRegion.id);
+    if (nextEvent && nextEvent.id !== selectedEventId) onSelectEvent(nextEvent.id);
+  };
 
   return (
     <div className="w-full lg:w-80 bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-800 p-4 space-y-5 text-xs shadow-xl shrink-0">
@@ -118,7 +128,7 @@ export const LeftSidebar: React.FC<Props> = ({
         </label>
         <select
           value={countryFilter}
-          onChange={(e) => setCountryFilter(e.target.value)}
+          onChange={(e) => handleCountryChange(e.target.value)}
           className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-cyan-500"
         >
           <option value="ALL">All Monitored Countries</option>

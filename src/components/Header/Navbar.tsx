@@ -36,7 +36,7 @@ export const Navbar: React.FC<Props> = ({
     <header className="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo & NASA Space Apps Badge */}
+          {/* Brand Logo */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('home')}>
             <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-700 shadow-lg shadow-cyan-500/25 border border-cyan-400/30">
               <Radar className="w-6 h-6 text-white animate-pulse" />
@@ -46,9 +46,6 @@ export const Navbar: React.FC<Props> = ({
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent">
                   NISAR FloodWatch
-                </span>
-                <span className="text-[10px] font-semibold tracking-wider text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800/60 hidden sm:inline-block">
-                  NASA SPACE APPS
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 hidden sm:block">

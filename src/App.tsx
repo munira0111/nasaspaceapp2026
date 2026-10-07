@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Navbar } from './components/Header/Navbar';
 import { Footer } from './components/Footer/Footer';
 import { HomePage } from './pages/Home/HomePage';
@@ -10,8 +11,13 @@ import { GlobalExplorerPage } from './pages/GlobalExplorer/GlobalExplorerPage';
 import { getActiveDataProvider, setDataProviderMode, getDataProviderMode } from './services/dataService';
 import { FloodEvent, Region } from './types/flood';
 
+const SceneBackdrop = React.lazy(() =>
+  import('./components/SceneBackdrop/SceneBackdrop').then((module) => ({ default: module.SceneBackdrop })),
+);
+
 export function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'map' | 'dashboard' | 'how-it-works' | 'global'>('home');
+  const [focusKey, setFocusKey] = useState(0);
   const [isDemoMode, setIsDemoMode] = useState<boolean>(getDataProviderMode() === 'DEMO');
 
   const [events, setEvents] = useState<FloodEvent[]>([]);
@@ -50,7 +56,11 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
+    <div className="app-shell min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
+      <React.Suspense fallback={null}>
+        <SceneBackdrop activeTab={activeTab} focusKey={focusKey} />
+      </React.Suspense>
+
       {/* Navigation Header */}
       <Navbar
         activeTab={activeTab}
@@ -60,7 +70,7 @@ export function App() {
       />
 
       {/* Main View Area */}
-      <main className="flex-1">
+      <main className="relative z-10 flex-1">
         {loading ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
             <div className="w-10 h-10 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
@@ -69,11 +79,19 @@ export function App() {
             </p>
           </div>
         ) : (
-          <>
+          <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 12, filter: 'blur(5px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -8, filter: 'blur(4px)' }}
+            transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+          >
             {activeTab === 'home' && (
               <HomePage
                 onNavigate={(page) => setActiveTab(page)}
                 onSelectEvent={handleSelectEventAndNavigateMap}
+                onFocus={() => setFocusKey((key) => key + 1)}
               />
             )}
 
@@ -106,12 +124,15 @@ export function App() {
                 onNavigateMap={() => setActiveTab('map')}
               />
             )}
-          </>
+          </motion.div>
+          </AnimatePresence>
         )}
       </main>
 
       {/* Global Footer */}
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 }

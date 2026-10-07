@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, type Variants } from 'framer-motion';
 import {
   Radar,
   ArrowRight,
@@ -18,13 +19,19 @@ import { DataStatusBadge } from '../../components/DataBadge/DataStatusBadge';
 interface Props {
   onNavigate: (page: 'map' | 'how-it-works' | 'dashboard' | 'global') => void;
   onSelectEvent: (eventId: string) => void;
+  onFocus: () => void;
 }
 
-export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
+const revealVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.48, ease: [0.22, 1, 0.36, 1] } },
+};
+
+export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent, onFocus }) => {
   return (
     <div className="space-y-16 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* Hero Section */}
-      <section className="relative rounded-3xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border border-slate-800 p-8 sm:p-12 lg:p-16 overflow-hidden shadow-2xl">
+      <section className="relative rounded-3xl bg-slate-950/55 backdrop-blur-[2px] border border-slate-700/80 p-8 sm:p-12 lg:p-16 overflow-hidden shadow-2xl">
         {/* Radar Background Glow Animation */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/10 blur-3xl pointer-events-none animate-pulse-glow" />
         
@@ -36,26 +43,34 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-3xl space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 text-xs font-semibold">
+        <motion.div
+          className="relative z-10 max-w-3xl space-y-6"
+          initial="hidden"
+          animate="visible"
+          variants={{ visible: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } } }}
+        >
+          <motion.div variants={revealVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800 text-cyan-300 text-xs font-semibold">
             <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
             <span>NASA Space Apps Challenge Prototype</span>
-          </div>
+          </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
+          <motion.h1 variants={revealVariants} className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
             See how Earth's surface changes{' '}
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
               before, during, and after floods.
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal max-w-2xl">
+          <motion.p variants={revealVariants} className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal max-w-2xl">
             Powered by NASA-ISRO Synthetic Aperture Radar (NISAR) concepts. Penetrate dense cloud cover and storm darkness to observe inundation extent, track surface water shifts, and measure flood impact in near-real-time.
-          </p>
+          </motion.p>
 
-          <div className="pt-2 flex flex-wrap items-center gap-4">
+          <motion.div variants={revealVariants} className="pt-2 flex flex-wrap items-center gap-4">
             <button
-              onClick={() => onNavigate('map')}
+              onClick={() => {
+                onFocus();
+                onNavigate('map');
+              }}
               className="flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-extrabold text-sm shadow-xl shadow-cyan-500/20 hover:from-cyan-400 hover:to-blue-500 transition-all hover:scale-[1.02]"
             >
               <Radar className="w-5 h-5 text-slate-950" />
@@ -69,13 +84,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
             >
               <span>How NISAR Radar Works</span>
             </button>
-          </div>
+          </motion.div>
 
           {/* Mandatory Data Rule Notice */}
-          <div className="pt-4">
+          <motion.div variants={revealVariants} className="pt-4">
             <DataStatusBadge isDemo={true} />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Feature Cards Grid */}
@@ -89,7 +104,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+        >
           {[
             {
               title: '🌊 Flood Detection',
@@ -124,8 +145,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
           ].map((feat, i) => {
             const Icon = feat.icon;
             return (
-              <div
+              <motion.div
                 key={i}
+                variants={revealVariants}
                 className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 space-y-3 shadow-lg transition-all hover:scale-[1.02]"
               >
                 <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400">
@@ -133,10 +155,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
                 </div>
                 <h3 className="font-bold text-slate-100 text-sm">{feat.title}</h3>
                 <p className="text-slate-400 text-xs leading-relaxed">{feat.desc}</p>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </section>
 
       {/* "Why Radar?" Section */}
@@ -236,6 +258,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onSelectEvent }) => {
             <div
               key={item.id}
               onClick={() => {
+                onFocus();
                 onSelectEvent(item.id);
                 onNavigate('map');
               }}
